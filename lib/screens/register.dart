@@ -2,10 +2,9 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:get/get.dart';
-import 'package:location/location.dart';
-import 'exports.dart';
+import 'package:myntra/constants/text.dart';
+import 'package:myntra/screens/login.dart';
 
 class RegisterButton extends GetxController {
   RxBool loading = false.obs;
@@ -27,34 +26,6 @@ class RegisterScreen extends StatelessWidget {
   final TextEditingController _name = TextEditingController();
   final _key = GlobalKey<FormState>();
   final RegisterButton _obj = Get.put(RegisterButton());
-  LocationData? _locationData;
-
-  Future getLocation() async {
-    Location location = Location();
-
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
-    LocationData _data;
-
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return;
-      }
-    }
-
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
-
-    _data = await location.getLocation();
-    return _data;
-  }
 
   void register() {
     if (_obj.loading.value) return;
@@ -64,10 +35,6 @@ class RegisterScreen extends StatelessWidget {
         .createUserWithEmailAndPassword(
             email: _email.text, password: _password.text)
         .then((value) async {
-      _locationData = await getLocation();
-      user.name = _name.text;
-      user.latitude = _locationData!.latitude!;
-      user.longitude = _locationData!.longitude!;
       FirebaseFirestore.instance
           .collection("user")
           .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -76,16 +43,12 @@ class RegisterScreen extends StatelessWidget {
         "id": FirebaseAuth.instance.currentUser!.uid,
         "wallet": 100,
         "email": _email.text,
-        "location": {
-          "latitude": _locationData!.latitude,
-          "longitude": _locationData!.longitude,
-        }
+        "location": {}
       }).then((value) {
         Get.snackbar("Success", "Account created successfully ${_name.text}",
             //  "Unable to login, Please try again later..",
             icon: const Icon(Icons.done));
         _obj.loading.value = false;
-        Get.offAll(() => MapScreen());
       });
     }).catchError((e) {
       Get.snackbar("Error", e.message,
@@ -100,7 +63,7 @@ class RegisterScreen extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       bottomSheet: Container(
-        color: Colors.grey[900],
+        color: Colors.white,
         height: size.height * 0.13,
         width: double.maxFinite,
         padding: const EdgeInsets.all(20),
@@ -120,7 +83,7 @@ class RegisterScreen extends StatelessWidget {
             ),
             child: Obx(
               () => MaterialButton(
-                color: Colors.white,
+                color: Colors.orange[800],
                 padding: const EdgeInsets.all(10),
                 height: double.maxFinite,
                 onPressed: () async {
@@ -137,7 +100,7 @@ class RegisterScreen extends StatelessWidget {
                     : Text(
                         "Register",
                         style: TextStyle(
-                          color: Colors.black,
+                          color: Colors.white,
                           fontSize: size.height * 0.021,
                         ),
                       ),
@@ -146,10 +109,10 @@ class RegisterScreen extends StatelessWidget {
           ),
         ),
       ),
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
-          mainAxisSize: MainAxisSize.max,
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
@@ -159,7 +122,7 @@ class RegisterScreen extends StatelessWidget {
                 height: size.height * 0.07,
                 child: IconButton(
                     onPressed: () {
-                      Get.off(() => const IntoScreen());
+                      Get.off(() => LoginScreen());
                     },
                     icon: Icon(Icons.navigate_before,
                         color: Colors.grey[500], size: size.height * 0.037)),
@@ -167,25 +130,17 @@ class RegisterScreen extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-              child: Text(
-                "Hello user.",
-                // textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: size.height * 0.044,
-                    color: Colors.white),
-              ),
+              child: Text("Hello user.",
+                  // textAlign: TextAlign.center,
+                  style: boldtextsyle(size.height * 0.044,
+                      color: Colors.black, shadow: true)),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-              child: Text(
-                "Welcome to the club.\nFeel free to explore!",
-                // textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: size.height * 0.032,
-                    color: Colors.white),
-              ),
+              child: Text("Welcome to the club.\nFeel free to explore!",
+                  // textAlign: TextAlign.center,
+                  style:
+                      boldtextsyle(size.height * 0.032, color: Colors.black)),
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),
