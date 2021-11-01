@@ -4,7 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myntra/constants/text.dart';
+import 'package:myntra/screens/dashboard.dart';
 import 'package:myntra/screens/login.dart';
+import 'package:myntra/screens/profile.dart';
 
 class RegisterButton extends GetxController {
   RxBool loading = false.obs;
@@ -35,21 +37,11 @@ class RegisterScreen extends StatelessWidget {
         .createUserWithEmailAndPassword(
             email: _email.text, password: _password.text)
         .then((value) async {
-      FirebaseFirestore.instance
-          .collection("user")
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .set({
-        "name": _name.text,
-        "id": FirebaseAuth.instance.currentUser!.uid,
-        "wallet": 100,
-        "email": _email.text,
-        "location": {}
-      }).then((value) {
-        Get.snackbar("Success", "Account created successfully ${_name.text}",
-            //  "Unable to login, Please try again later..",
-            icon: const Icon(Icons.done));
-        _obj.loading.value = false;
-      });
+      Get.snackbar("Success", "Account created successfully ${_name.text}",
+          //  "Unable to login, Please try again later..",
+          icon: const Icon(Icons.done));
+      _obj.loading.value = false;
+      Get.offAll(() => const ProfileScreen());
     }).catchError((e) {
       Get.snackbar("Error", e.message,
           //  "Unable to login, Please try again later..",
@@ -83,7 +75,7 @@ class RegisterScreen extends StatelessWidget {
             ),
             child: Obx(
               () => MaterialButton(
-                color: Colors.orange[800],
+                color: Colors.pink[700],
                 padding: const EdgeInsets.all(10),
                 height: double.maxFinite,
                 onPressed: () async {
@@ -95,7 +87,7 @@ class RegisterScreen extends StatelessWidget {
                 },
                 child: (_obj.loading.value)
                     ? const CircularProgressIndicator(
-                        color: Colors.black,
+                        color: Colors.white,
                       )
                     : Text(
                         "Register",
@@ -166,36 +158,6 @@ class RegisterScreen extends StatelessWidget {
                               color: Colors.grey,
                             ),
                             hintText: "abcd@gmail.com",
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.grey,
-                              ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                            ),
-                            hintStyle: TextStyle(
-                              color: Colors.grey,
-                            )
-                            // prefixIcon: Icon(Icons.email)
-                            ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        validator: (text) {
-                          if (text == null || text.isEmpty) {
-                            return 'Enter your Name!';
-                          }
-                          return null;
-                        },
-                        controller: _name,
-                        keyboardType: TextInputType.text,
-                        decoration: const InputDecoration(
-                            // label: Text("Email"),
-                            prefixIcon: Icon(
-                              Icons.person_rounded,
-                              color: Colors.grey,
-                            ),
-                            hintText: "Piro coder",
                             border: OutlineInputBorder(
                               borderSide: BorderSide(
                                 color: Colors.grey,

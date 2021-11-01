@@ -1,4 +1,4 @@
-List jobs = [
+List<String> jobs = [
   "accountant",
   "actor",
   "actuary",

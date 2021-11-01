@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myntra/constants/text.dart';
+import 'package:myntra/main.dart';
+import 'package:myntra/screens/dashboard.dart';
 import 'package:myntra/screens/register.dart';
 
 class LoginButton extends GetxController {
@@ -25,7 +27,7 @@ class LoginScreen extends StatelessWidget {
             email: _email.text, password: _password.text)
         .then((value) {
       _obj.loading.value = false;
-      // Get.offAll(() => const MapScreen());
+      Get.offAll(() => const AuthChecker());
     }).catchError((e) {
       Get.snackbar("Error", e.message,
           //  "Unable to login, Please try again later..",
