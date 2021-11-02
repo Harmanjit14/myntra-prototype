@@ -1,12 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myntra/constants/text.dart';
 import 'package:myntra/screens/product_screen.dart';
-
-class Product extends GetxController {
-  RxBool liked = false.obs;
-  RxBool cart = false.obs;
-}
 
 product() {
   return SizedBox(
@@ -24,14 +20,13 @@ product() {
   );
 }
 
-productBox() {
-  final _product = Get.put(Product());
+productBox(DocumentSnapshot _doc) {
   return SizedBox(
     child: Padding(
       padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
       child: InkWell(
         onTap: () {
-          Get.to(() => const ProductPage(), transition: Transition.leftToRight);
+          Get.to(() => ProductPage(_doc), transition: Transition.leftToRight);
         },
         child: Container(
           decoration: BoxDecoration(
@@ -45,68 +40,20 @@ productBox() {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Flexible(
-                child: Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(0.0),
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20)),
-                        child: SizedBox(
-                          // height:100,
-                          child: Image.asset(
-                            "assets/model.png",
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20)),
+                    child: SizedBox(
+                      // height:100,
+                      child: Image.asset(
+                        "assets/model.png",
+                        fit: BoxFit.contain,
                       ),
                     ),
-                    Obx(
-                      () => Align(
-                        alignment: Alignment.topRight,
-                        child: IconButton(
-                          onPressed: () {
-                            _product.liked.value =
-                                (_product.liked.value) ? false : true;
-                          },
-                          icon: (_product.liked.value)
-                              ? const Icon(
-                                  Icons.favorite,
-                                  color: Colors.pink,
-                                  size: 30,
-                                )
-                              : const Icon(
-                                  Icons.favorite_border,
-                                  color: Colors.grey,
-                                  size: 30,
-                                ),
-                        ),
-                      ),
-                    ),
-                    Obx(
-                      () => Align(
-                        alignment: Alignment.bottomRight,
-                        child: IconButton(
-                          onPressed: () {
-                            _product.cart.value =
-                                (_product.cart.value) ? false : true;
-                          },
-                          icon: (_product.cart.value)
-                              ? const Icon(
-                                  Icons.remove_circle,
-                                  color: Colors.red,
-                                  size: 30,
-                                )
-                              : Icon(
-                                  Icons.shopping_bag,
-                                  color: Colors.orange.shade700,
-                                  size: 30,
-                                ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
               const SizedBox(
@@ -115,20 +62,20 @@ productBox() {
               Padding(
                 padding: const EdgeInsets.only(left: 15),
                 child: Text(
-                  "Green Dress",
+                  "${_doc.get('title')}",
                   style: boldtextsyle(16, shadow: true),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 15),
                 child: Text(
-                  "Women dress A",
+                  "${_doc.get('subtitle')}",
                   style: normaltextsyle(13, color: Colors.grey.shade600),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 15),
-                child: Text("\$50",
+                child: Text("${_doc.get('price')}",
                     style: boldtextsyle(18,
                         shadow: true, color: Colors.pink.shade300)),
               ),

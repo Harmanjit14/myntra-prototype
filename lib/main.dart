@@ -61,15 +61,15 @@ class _AuthCheckerState extends State<AuthChecker> with AfterLayoutMixin {
   @override
   void afterFirstLayout(BuildContext context) async {
     await FirebaseFirestore.instance
-        .collection("user")
+        .collection("users")
         .doc(FirebaseAuth.instance.currentUser!.uid.toString())
         .get()
         .then((value) {
-      user.name = value.get("name");
-      user.image = value.get("image");
-      user.jobType = value.get("jobType");
-      user.email = value.get("email");
-      user.score = value.get("score");
+      user.name = value['name'];
+      user.image = value['image'];
+      user.jobType = value['job'];
+      user.email = value['email'];
+      user.score = value['score'];
       Get.offAll(() => const DashBoard());
     }).catchError((e) {
       print(e);
@@ -88,7 +88,7 @@ class _AuthCheckerState extends State<AuthChecker> with AfterLayoutMixin {
           mainAxisSize: MainAxisSize.min,
           children: const [
             CircularProgressIndicator(
-              color: Colors.white,
+              color: Colors.black,
             ),
             SizedBox(height: 15),
             Text("Loading Please Wait...")

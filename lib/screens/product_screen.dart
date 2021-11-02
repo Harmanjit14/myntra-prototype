@@ -1,9 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:myntra/constants/text.dart';
 
 class ProductPage extends StatelessWidget {
-  const ProductPage({Key? key}) : super(key: key);
+  const ProductPage(
+    this.doc, {
+    Key? key,
+  }) : super(key: key);
+  final DocumentSnapshot? doc;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +34,10 @@ class ProductPage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          const Icon(Icons.tv,size: 20,),
+                          const Icon(
+                            Icons.tv,
+                            size: 20,
+                          ),
                           const SizedBox(
                             width: 7,
                           ),
@@ -166,7 +174,7 @@ class ProductPage extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                "4.1",
+                                "${doc!.get('rating')}",
                                 style: boldtextsyle(15, color: Colors.black),
                               ),
                               const SizedBox(
@@ -206,7 +214,7 @@ class ProductPage extends StatelessWidget {
                     textBaseline: TextBaseline.alphabetic,
                     children: [
                       Text(
-                        "Brand Name",
+                        "${doc!.get('title')}",
                         style: boldtextsyle(20),
                       ),
                       const SizedBox(
@@ -214,7 +222,7 @@ class ProductPage extends StatelessWidget {
                         width: 5,
                       ),
                       Text(
-                        "Mens chsbf,f.kh.ffj",
+                        "${doc!.get('subtitle')}",
                         style: mediumtextsyle(14, color: Colors.grey[600]),
                       ),
                     ],
@@ -223,7 +231,7 @@ class ProductPage extends StatelessWidget {
                     height: 5,
                   ),
                   Text(
-                    "Rs. 5000",
+                    "${doc!.get('price')}",
                     style: boldtextsyle(22,
                         shadow: false, color: Colors.pink[700]),
                   ),

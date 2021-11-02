@@ -94,6 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           : Timer(const Duration(seconds: 2), () {
                               _key.currentState!.reset();
                             });
+                      // FirebaseAuth.instance.signOut();
                     },
                     child: (_obj.loading.value)
                         ? const CircularProgressIndicator(

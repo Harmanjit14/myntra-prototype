@@ -78,7 +78,7 @@ class LoginScreen extends StatelessWidget {
                     },
                     child: (_obj.loading.value)
                         ? const CircularProgressIndicator(
-                            color: Colors.black,
+                            color: Colors.white,
                           )
                         : Text("Login",
                             style: boldtextsyle(size.height * 0.021,
