@@ -1,18 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:myntra/constants/text.dart';
 
+class ProductInfo extends GetxController {
+  RxInt selectedSize = (-1).obs;
+}
+
 class ProductPage extends StatelessWidget {
-  const ProductPage(
+  ProductPage(
     this.doc, {
     Key? key,
   }) : super(key: key);
   final DocumentSnapshot? doc;
+  final productInfo = Get.put(ProductInfo());
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       bottomSheet: SizedBox(
         height: 70,
@@ -239,6 +246,140 @@ class ProductPage extends StatelessWidget {
                     "(inclusive all taxes)",
                     style: normaltextsyle(13, color: Colors.green[700]),
                   ),
+                ],
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: const [
+                    BoxShadow(blurRadius: 5, color: Colors.grey)
+                  ]),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    "Available Sizes",
+                    style: boldtextsyle(16),
+                  ),
+                  const SizedBox(
+                    height: 14,
+                  ),
+                  SizedBox(
+                    height: 50,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: doc!.get("size").length,
+                        itemBuilder: (context, index) {
+                          List<dynamic> proSize = doc!.get("size");
+                          return Obx(
+                            () => Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                              child: FloatingActionButton(
+                                backgroundColor:
+                                    (productInfo.selectedSize.value == index)
+                                        ? Colors.orange[800]
+                                        : Colors.white,
+                                onPressed: () {
+                                  productInfo.selectedSize.value = index;
+                                },
+                                child: Text(
+                                  proSize[index].toString(),
+                                  style: boldtextsyle(
+                                    13,
+                                    color: (productInfo.selectedSize.value ==
+                                            index)
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: const [
+                    BoxShadow(blurRadius: 5, color: Colors.grey)
+                  ]),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    "Product Details",
+                    style: boldtextsyle(16),
+                  ),
+                  SizedBox(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        itemCount: doc!.get("details").length,
+                        itemBuilder: (context, index) {
+                          return Text(
+                            (index + 1).toString() +
+                                "." +" "+
+                                doc!.get("details")[index].toString(),
+                            style: boldtextsyle(
+                              13,
+                              color: Colors.grey[700],
+                            ),
+                          );
+                        }),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    "Size and Fit",
+                    style: boldtextsyle(16),
+                  ),
+                  const SizedBox(
+                    height: 3,
+                  ),
+                  Text(
+                    doc!.get("fit").toString(),
+                    style: boldtextsyle(
+                      13,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    "Material",
+                    style: boldtextsyle(16),
+                  ),
+                  const SizedBox(
+                    height: 3,
+                  ),
+                  Text(
+                    doc!.get("material").toString(),
+                    style: boldtextsyle(
+                      13,
+                      color: Colors.grey[700],
+                    ),
+                  )
                 ],
               ),
             ),
