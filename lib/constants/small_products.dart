@@ -26,7 +26,7 @@ productBox(DocumentSnapshot _doc) {
       padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
       child: InkWell(
         onTap: () {
-          Get.to(() => ProductPage(_doc), transition: Transition.leftToRight);
+          Get.to(() => ProductPage(_doc));
         },
         child: Container(
           decoration: BoxDecoration(

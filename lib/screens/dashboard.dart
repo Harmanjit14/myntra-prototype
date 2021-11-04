@@ -97,8 +97,8 @@ class _DashBoardState extends State<DashBoard> {
         controller: _controller,
         children: [
           AllProducts(),
-          AllProducts(),
-          AllProducts(),
+          // AllProducts(),
+          // AllProducts(),
         ],
       ),
     );

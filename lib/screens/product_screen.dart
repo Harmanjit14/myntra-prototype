@@ -1,15 +1,59 @@
+import 'package:after_layout/after_layout.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:myntra/constants/text.dart';
 
+class ProductPage extends StatefulWidget {
+  const ProductPage(this.doc, {Key? key}) : super(key: key);
+  final DocumentSnapshot? doc;
+
+  @override
+  _ProductPageState createState() => _ProductPageState();
+}
+
+class _ProductPageState extends State<ProductPage> with AfterLayoutMixin {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+          child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          CircularProgressIndicator(
+            color: Colors.pink,
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Text("Loading, Please wait..")
+        ],
+      )),
+    );
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> obj = await FirebaseFirestore.instance
+          .collection("kits")
+          .where('id', arrayContainsAny: ['8HacodH2CbKYC1GnyGuU']).get();
+      print(obj.docs[0].get("id"));
+    } catch (e) {
+      print("HERE");
+      print(e.toString());
+    }
+    Get.off(() => ProductScreen(widget.doc));
+  }
+}
+
 class ProductInfo extends GetxController {
   RxInt selectedSize = (-1).obs;
 }
 
-class ProductPage extends StatelessWidget {
-  ProductPage(
+class ProductScreen extends StatelessWidget {
+  ProductScreen(
     this.doc, {
     Key? key,
   }) : super(key: key);
@@ -283,6 +327,7 @@ class ProductPage extends StatelessWidget {
                             () => Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                               child: FloatingActionButton(
+                                heroTag: "$index",
                                 backgroundColor:
                                     (productInfo.selectedSize.value == index)
                                         ? Colors.orange[800]
@@ -337,7 +382,8 @@ class ProductPage extends StatelessWidget {
                         itemBuilder: (context, index) {
                           return Text(
                             (index + 1).toString() +
-                                "." +" "+
+                                "." +
+                                " " +
                                 doc!.get("details")[index].toString(),
                             style: boldtextsyle(
                               13,

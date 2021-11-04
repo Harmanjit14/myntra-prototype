@@ -11,6 +11,7 @@ import 'package:myntra/screens/dashboard.dart';
 import 'package:myntra/screens/login.dart';
 import 'package:myntra/screens/profile.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
