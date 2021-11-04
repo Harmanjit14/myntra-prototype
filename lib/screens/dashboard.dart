@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:myntra/constants/text.dart';
 import 'package:myntra/screens/dashboard%20screens/allproducts.dart';
@@ -43,16 +44,16 @@ class _DashBoardState extends State<DashBoard> {
           },
           items: const [
             BottomNavigationBarItem(
-              label: 'Favorites',
-              icon: Icon(Icons.favorite),
+              label: 'Products',
+              icon: FaIcon(FontAwesomeIcons.tshirt),
             ),
             BottomNavigationBarItem(
-              label: 'Music',
-              icon: Icon(Icons.music_note),
+              label: 'Studio',
+              icon: FaIcon(FontAwesomeIcons.tv),
             ),
             BottomNavigationBarItem(
-              label: 'Places',
-              icon: Icon(Icons.location_on),
+              label: 'Profile',
+              icon: FaIcon(FontAwesomeIcons.laughBeam),
             ),
           ],
         ),
@@ -95,7 +96,7 @@ class _DashBoardState extends State<DashBoard> {
         allowImplicitScrolling: false,
         physics: const NeverScrollableScrollPhysics(),
         controller: _controller,
-        children: [
+        children: const [
           AllProducts(),
           // AllProducts(),
           // AllProducts(),

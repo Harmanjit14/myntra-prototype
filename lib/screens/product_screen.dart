@@ -18,17 +18,17 @@ class ProductScreen extends StatelessWidget {
   final DocumentSnapshot? doc;
   final productInfo = Get.put(ProductInfo());
 
-  final YoutubePlayerController _controller = YoutubePlayerController(
-    initialVideoId: 'K18cpp_-gP8',
-    params: const YoutubePlayerParams(
-      startAt: Duration(seconds: 0),
-      showControls: true,
-      showFullscreenButton: true,
-    ),
-  );
-
   @override
   Widget build(BuildContext context) {
+    final YoutubePlayerController _controller = YoutubePlayerController(
+      initialVideoId: doc!.get('video'),
+      params: const YoutubePlayerParams(
+        startAt: Duration(seconds: 0),
+        showControls: true,
+        showFullscreenButton: true,
+      ),
+    );
+
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -162,14 +162,14 @@ class ProductScreen extends StatelessWidget {
               child: Stack(
                 children: [
                   PageView.builder(
-                      itemCount: 3,
+                      itemCount: 1,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
                         return SizedBox(
                           width: size.width,
                           height: double.maxFinite,
-                          child: Image.asset(
-                            "assets/model.png",
+                          child: Image.network(
+                            "${doc!.get("image")}",
                             fit: BoxFit.cover,
                           ),
                         );
@@ -458,7 +458,7 @@ class ProductScreen extends StatelessWidget {
                             return PageView.builder(
                               itemCount: (snapshot.data!.docs.length < 3)
                                   ? snapshot.data!.docs.length
-                                  : 3,
+                                  : 10,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 return Column(
@@ -477,8 +477,24 @@ class ProductScreen extends StatelessWidget {
                                             ),
                                           ),
                                           Expanded(
-                                              child: Container(
-                                            color: Colors.green,
+                                              child: Column(
+                                            children: [
+                                              Expanded(
+                                                  child: InkWell(
+                                                onTap: () {},
+                                                child: Image.network(snapshot
+                                                    .data!.docs[index]
+                                                    .get("images")[0]),
+                                              )),
+                                              Expanded(
+                                                  child: InkWell(
+                                                onTap: () {},
+                                                splashColor: Colors.grey,
+                                                child: Image.network(snapshot
+                                                    .data!.docs[index]
+                                                    .get("images")[1]),
+                                              ))
+                                            ],
                                           ))
                                         ],
                                       ),
@@ -560,41 +576,38 @@ class ProductScreen extends StatelessWidget {
                                                         .toString()))
                                                 ? IconButton(
                                                     onPressed: () async {
-                                                      // await FirebaseFirestore
-                                                      //     .instance
-                                                      //     .collection("kits")
-                                                      //     .doc(snapshot.data!
-                                                      //         .docs[index].id
-                                                      //         .toString())
-                                                      //     .set({
-                                                      //   'likes': snapshot.data!
-                                                      //           .docs[index]
-                                                      //           .get('likes') -
-                                                      //       1,
-                                                      // }).then((value) => {
-                                                      //           FirebaseFirestore
-                                                      //               .instance
-                                                      //               .collection(
-                                                      //                   "kits")
-                                                      //               .doc(snapshot
-                                                      //                   .data!
-                                                      //                   .docs[
-                                                      //                       index]
-                                                      //                   .id
-                                                      //                   .toString())
-                                                      //               .set({
-                                                      //             'id': snapshot
-                                                      //                 .data!
-                                                      //                 .docs[
-                                                      //                     index]
-                                                      //                 .get('id')
-                                                      //                 .remove(FirebaseAuth
-                                                      //                     .instance
-                                                      //                     .currentUser!
-                                                      //                     .uid
-                                                      //                     .toString()),
-                                                      //           }),
-                                                      //         });
+                                                      int likes = snapshot
+                                                          .data!.docs[index]
+                                                          .get('likes');
+                                                      likes = likes - 1;
+                                                      await FirebaseFirestore
+                                                          .instance
+                                                          .collection("kits")
+                                                          .doc(snapshot.data!
+                                                              .docs[index].id
+                                                              .toString())
+                                                          .update({
+                                                        'likes': likes,
+                                                      }).then((value) {
+                                                        List users = snapshot
+                                                            .data!.docs[index]
+                                                            .get('likedby');
+                                                        users.remove(
+                                                            FirebaseAuth
+                                                                .instance
+                                                                .currentUser!
+                                                                .uid);
+                                                        print(users);
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection("kits")
+                                                            .doc(snapshot.data!
+                                                                .docs[index].id
+                                                                .toString())
+                                                            .update({
+                                                          'likedby': users,
+                                                        });
+                                                      });
                                                     },
                                                     icon: const Icon(
                                                       Icons.favorite,
@@ -602,41 +615,36 @@ class ProductScreen extends StatelessWidget {
                                                     ))
                                                 : IconButton(
                                                     onPressed: () async {
-                                                      //  await FirebaseFirestore
-                                                      //     .instance
-                                                      //     .collection("kits")
-                                                      //     .doc(snapshot.data!
-                                                      //         .docs[index].id
-                                                      //         .toString())
-                                                      //     .set({
-                                                      //   'likes': snapshot.data!
-                                                      //           .docs[index]
-                                                      //           .get('likes') +
-                                                      //       1,
-                                                      // }).then((value) => {
-                                                      //           FirebaseFirestore
-                                                      //               .instance
-                                                      //               .collection(
-                                                      //                   "kits")
-                                                      //               .doc(snapshot
-                                                      //                   .data!
-                                                      //                   .docs[
-                                                      //                       index]
-                                                      //                   .id
-                                                      //                   .toString())
-                                                      //               .set({
-                                                      //             'id': snapshot
-                                                      //                 .data!
-                                                      //                 .docs[
-                                                      //                     index]
-                                                      //                 .get('id')
-                                                      //                 .add(FirebaseAuth
-                                                      //                     .instance
-                                                      //                     .currentUser!
-                                                      //                     .uid
-                                                      //                     .toString()),
-                                                      //           }),
-                                                      //         });
+                                                      await FirebaseFirestore
+                                                          .instance
+                                                          .collection("kits")
+                                                          .doc(snapshot.data!
+                                                              .docs[index].id
+                                                              .toString())
+                                                          .update({
+                                                        'likes': snapshot.data!
+                                                                .docs[index]
+                                                                .get('likes') +
+                                                            1,
+                                                      }).then((value) {
+                                                        List users = snapshot
+                                                            .data!.docs[index]
+                                                            .get('likedby');
+                                                        users.add(FirebaseAuth
+                                                            .instance
+                                                            .currentUser!
+                                                            .uid);
+                                                        print(users);
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection("kits")
+                                                            .doc(snapshot.data!
+                                                                .docs[index].id
+                                                                .toString())
+                                                            .update({
+                                                          'likedby': users,
+                                                        });
+                                                      });
                                                     },
                                                     icon: const Icon(
                                                       Icons
@@ -740,7 +748,7 @@ class ProductScreen extends StatelessWidget {
                             return PageView.builder(
                               itemCount: (snapshot.data!.docs.length < 3)
                                   ? snapshot.data!.docs.length
-                                  : 3,
+                                  : 10,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 return Column(
@@ -842,41 +850,38 @@ class ProductScreen extends StatelessWidget {
                                                         .toString()))
                                                 ? IconButton(
                                                     onPressed: () async {
-                                                      // await FirebaseFirestore
-                                                      //     .instance
-                                                      //     .collection("kits")
-                                                      //     .doc(snapshot.data!
-                                                      //         .docs[index].id
-                                                      //         .toString())
-                                                      //     .set({
-                                                      //   'likes': snapshot.data!
-                                                      //           .docs[index]
-                                                      //           .get('likes') -
-                                                      //       1,
-                                                      // }).then((value) => {
-                                                      //           FirebaseFirestore
-                                                      //               .instance
-                                                      //               .collection(
-                                                      //                   "kits")
-                                                      //               .doc(snapshot
-                                                      //                   .data!
-                                                      //                   .docs[
-                                                      //                       index]
-                                                      //                   .id
-                                                      //                   .toString())
-                                                      //               .set({
-                                                      //             'id': snapshot
-                                                      //                 .data!
-                                                      //                 .docs[
-                                                      //                     index]
-                                                      //                 .get('id')
-                                                      //                 .remove(FirebaseAuth
-                                                      //                     .instance
-                                                      //                     .currentUser!
-                                                      //                     .uid
-                                                      //                     .toString()),
-                                                      //           }),
-                                                      //         });
+                                                      int likes = snapshot
+                                                          .data!.docs[index]
+                                                          .get('likes');
+                                                      likes = likes - 1;
+                                                      await FirebaseFirestore
+                                                          .instance
+                                                          .collection("kits")
+                                                          .doc(snapshot.data!
+                                                              .docs[index].id
+                                                              .toString())
+                                                          .update({
+                                                        'likes': likes,
+                                                      }).then((value) {
+                                                        List users = snapshot
+                                                            .data!.docs[index]
+                                                            .get('likedby');
+                                                        users.remove(
+                                                            FirebaseAuth
+                                                                .instance
+                                                                .currentUser!
+                                                                .uid);
+                                                        print(users);
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection("kits")
+                                                            .doc(snapshot.data!
+                                                                .docs[index].id
+                                                                .toString())
+                                                            .update({
+                                                          'likedby': users,
+                                                        });
+                                                      });
                                                     },
                                                     icon: const Icon(
                                                       Icons.favorite,
@@ -884,41 +889,36 @@ class ProductScreen extends StatelessWidget {
                                                     ))
                                                 : IconButton(
                                                     onPressed: () async {
-                                                      //  await FirebaseFirestore
-                                                      //     .instance
-                                                      //     .collection("kits")
-                                                      //     .doc(snapshot.data!
-                                                      //         .docs[index].id
-                                                      //         .toString())
-                                                      //     .set({
-                                                      //   'likes': snapshot.data!
-                                                      //           .docs[index]
-                                                      //           .get('likes') +
-                                                      //       1,
-                                                      // }).then((value) => {
-                                                      //           FirebaseFirestore
-                                                      //               .instance
-                                                      //               .collection(
-                                                      //                   "kits")
-                                                      //               .doc(snapshot
-                                                      //                   .data!
-                                                      //                   .docs[
-                                                      //                       index]
-                                                      //                   .id
-                                                      //                   .toString())
-                                                      //               .set({
-                                                      //             'id': snapshot
-                                                      //                 .data!
-                                                      //                 .docs[
-                                                      //                     index]
-                                                      //                 .get('id')
-                                                      //                 .add(FirebaseAuth
-                                                      //                     .instance
-                                                      //                     .currentUser!
-                                                      //                     .uid
-                                                      //                     .toString()),
-                                                      //           }),
-                                                      //         });
+                                                      await FirebaseFirestore
+                                                          .instance
+                                                          .collection("kits")
+                                                          .doc(snapshot.data!
+                                                              .docs[index].id
+                                                              .toString())
+                                                          .update({
+                                                        'likes': snapshot.data!
+                                                                .docs[index]
+                                                                .get('likes') +
+                                                            1,
+                                                      }).then((value) {
+                                                        List users = snapshot
+                                                            .data!.docs[index]
+                                                            .get('likedby');
+                                                        users.add(FirebaseAuth
+                                                            .instance
+                                                            .currentUser!
+                                                            .uid);
+                                                        print(users);
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection("kits")
+                                                            .doc(snapshot.data!
+                                                                .docs[index].id
+                                                                .toString())
+                                                            .update({
+                                                          'likedby': users,
+                                                        });
+                                                      });
                                                     },
                                                     icon: const Icon(
                                                       Icons
@@ -984,12 +984,49 @@ class ProductScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  Text(
+                    "Fresh Styles for you...",
+                    style: boldtextsyle(16, shadow: false, color: Colors.black),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
                   SizedBox(
-                    height: 500,
-                    child: YoutubePlayerIFrame(
-                      controller: _controller,
-                      aspectRatio: 16 / 9,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: YoutubePlayerIFrame(
+                        controller: _controller,
+                        aspectRatio: 4 / 3,
+                      ),
                     ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: const [
+                    BoxShadow(blurRadius: 5, color: Colors.grey)
+                  ]),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    "Comments and Reviews",
+                    style: boldtextsyle(16, shadow: false, color: Colors.black),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "From People you may Know..",
+                    style: mediumtextsyle(14, color: Colors.black),
                   ),
                 ],
               ),
