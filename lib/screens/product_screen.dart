@@ -1,11 +1,10 @@
-import 'package:after_layout/after_layout.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:myntra/constants/text.dart';
-import 'package:myntra/screens/dashboard.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class ProductInfo extends GetxController {
   RxInt selectedSize = (-1).obs;
@@ -18,6 +17,15 @@ class ProductScreen extends StatelessWidget {
   }) : super(key: key);
   final DocumentSnapshot? doc;
   final productInfo = Get.put(ProductInfo());
+
+  final YoutubePlayerController _controller = YoutubePlayerController(
+    initialVideoId: 'K18cpp_-gP8',
+    params: const YoutubePlayerParams(
+      startAt: Duration(seconds: 0),
+      showControls: true,
+      showFullscreenButton: true,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -428,6 +436,7 @@ class ProductScreen extends StatelessWidget {
                     child: StreamBuilder<QuerySnapshot>(
                         stream: FirebaseFirestore.instance
                             .collection("kits")
+                            .where('verified', isEqualTo: true)
                             .where('id', arrayContainsAny: [
                           doc!.get('id').toString()
                         ]).snapshots(),
@@ -526,7 +535,7 @@ class ProductScreen extends StatelessWidget {
                                                     )
                                                   ],
                                                 )
-                                              :const  SizedBox(
+                                              : const SizedBox(
                                                   height: 0,
                                                   width: 0,
                                                 ),
@@ -673,7 +682,315 @@ class ProductScreen extends StatelessWidget {
                                 child: Text("No Data found here..."));
                           }
                         }),
-                  )
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: const [
+                    BoxShadow(blurRadius: 5, color: Colors.grey)
+                  ]),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Created by Users like You!",
+                        style: boldtextsyle(16,
+                            shadow: true, color: Colors.orange[900]),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    height: 417,
+                    child: StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection("kits")
+                            .where('verified', isEqualTo: false)
+                            .where('id', arrayContainsAny: [
+                          doc!.get('id').toString()
+                        ]).snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(
+                                child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CircularProgressIndicator(
+                                  color: Colors.pink[800],
+                                ),
+                                const SizedBox(height: 15),
+                                const Text("Loading.."),
+                              ],
+                            ));
+                          } else if (snapshot.hasData) {
+                            return PageView.builder(
+                              itemCount: (snapshot.data!.docs.length < 3)
+                                  ? snapshot.data!.docs.length
+                                  : 3,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    SizedBox(
+                                      height: 300,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                          Expanded(
+                                              child: Container(
+                                            color: Colors.green,
+                                          ))
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    TextButton(
+                                      style: const ButtonStyle(
+                                        // padding: EdgeInsets.all(0),
+                                        alignment: Alignment.center,
+                                      ),
+                                      onPressed: () {},
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                "Created with love by ",
+                                                style: mediumtextsyle(14,
+                                                    color: Colors.grey[700]),
+                                              ),
+                                              Text(
+                                                "${snapshot.data!.docs[index].get("createdBy")[0]}",
+                                                style: boldtextsyle(14,
+                                                    color: Colors.black),
+                                              ),
+                                            ],
+                                          ),
+                                          (snapshot.data!.docs[index]
+                                                  .get('verified'))
+                                              ? Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "Verified User",
+                                                      style: normaltextsyle(10,
+                                                          color: Colors
+                                                              .green[800]),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 3,
+                                                    ),
+                                                    FaIcon(
+                                                      FontAwesomeIcons
+                                                          .checkCircle,
+                                                      color: Colors.green[800],
+                                                      size: 10,
+                                                    )
+                                                  ],
+                                                )
+                                              : const SizedBox(
+                                                  height: 0,
+                                                  width: 0,
+                                                ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            (snapshot.data!.docs[index]
+                                                    .get("likedby")
+                                                    .contains(FirebaseAuth
+                                                        .instance
+                                                        .currentUser!
+                                                        .uid
+                                                        .toString()))
+                                                ? IconButton(
+                                                    onPressed: () async {
+                                                      // await FirebaseFirestore
+                                                      //     .instance
+                                                      //     .collection("kits")
+                                                      //     .doc(snapshot.data!
+                                                      //         .docs[index].id
+                                                      //         .toString())
+                                                      //     .set({
+                                                      //   'likes': snapshot.data!
+                                                      //           .docs[index]
+                                                      //           .get('likes') -
+                                                      //       1,
+                                                      // }).then((value) => {
+                                                      //           FirebaseFirestore
+                                                      //               .instance
+                                                      //               .collection(
+                                                      //                   "kits")
+                                                      //               .doc(snapshot
+                                                      //                   .data!
+                                                      //                   .docs[
+                                                      //                       index]
+                                                      //                   .id
+                                                      //                   .toString())
+                                                      //               .set({
+                                                      //             'id': snapshot
+                                                      //                 .data!
+                                                      //                 .docs[
+                                                      //                     index]
+                                                      //                 .get('id')
+                                                      //                 .remove(FirebaseAuth
+                                                      //                     .instance
+                                                      //                     .currentUser!
+                                                      //                     .uid
+                                                      //                     .toString()),
+                                                      //           }),
+                                                      //         });
+                                                    },
+                                                    icon: const Icon(
+                                                      Icons.favorite,
+                                                      color: Colors.pink,
+                                                    ))
+                                                : IconButton(
+                                                    onPressed: () async {
+                                                      //  await FirebaseFirestore
+                                                      //     .instance
+                                                      //     .collection("kits")
+                                                      //     .doc(snapshot.data!
+                                                      //         .docs[index].id
+                                                      //         .toString())
+                                                      //     .set({
+                                                      //   'likes': snapshot.data!
+                                                      //           .docs[index]
+                                                      //           .get('likes') +
+                                                      //       1,
+                                                      // }).then((value) => {
+                                                      //           FirebaseFirestore
+                                                      //               .instance
+                                                      //               .collection(
+                                                      //                   "kits")
+                                                      //               .doc(snapshot
+                                                      //                   .data!
+                                                      //                   .docs[
+                                                      //                       index]
+                                                      //                   .id
+                                                      //                   .toString())
+                                                      //               .set({
+                                                      //             'id': snapshot
+                                                      //                 .data!
+                                                      //                 .docs[
+                                                      //                     index]
+                                                      //                 .get('id')
+                                                      //                 .add(FirebaseAuth
+                                                      //                     .instance
+                                                      //                     .currentUser!
+                                                      //                     .uid
+                                                      //                     .toString()),
+                                                      //           }),
+                                                      //         });
+                                                    },
+                                                    icon: const Icon(
+                                                      Icons
+                                                          .favorite_border_outlined,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                            Text(
+                                              "${snapshot.data!.docs[index].get("likes")}",
+                                              style: mediumtextsyle(12),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          width: 15,
+                                        ),
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              onPressed: () async {
+                                                print("Comments");
+                                              },
+                                              icon: FaIcon(
+                                                FontAwesomeIcons.comments,
+                                                color: Colors.grey[700],
+                                              ),
+                                            ),
+                                            Text(
+                                              "${snapshot.data!.docs[index].get("comments").length}",
+                                              style: mediumtextsyle(12),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            return const Center(
+                                child: Text("No Data found here..."));
+                          }
+                        }),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: const [
+                    BoxShadow(blurRadius: 5, color: Colors.grey)
+                  ]),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 500,
+                    child: YoutubePlayerIFrame(
+                      controller: _controller,
+                      aspectRatio: 16 / 9,
+                    ),
+                  ),
                 ],
               ),
             ),
