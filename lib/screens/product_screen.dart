@@ -1014,7 +1014,8 @@ class ProductScreen extends StatelessWidget {
                   boxShadow: const [
                     BoxShadow(blurRadius: 5, color: Colors.grey)
                   ]),
-              child: Column(
+              child: Flex(
+                direction: Axis.vertical,
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -1026,8 +1027,109 @@ class ProductScreen extends StatelessWidget {
                   const SizedBox(height: 10),
                   Text(
                     "From People you may Know..",
-                    style: mediumtextsyle(14, color: Colors.black),
+                    style: mediumtextsyle(14, color: Colors.orange[900]),
                   ),
+                  Text(
+                    "(Swipe to view more...)",
+                    style: normaltextsyle(11, color: Colors.orange[900]),
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    height: 100,
+                    child:
+                        StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                      stream: FirebaseFirestore.instance
+                          .collection("products")
+                          .doc(doc!.get('id'))
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.orange,
+                            ),
+                          );
+                        } else if (snapshot.hasError ||
+                            snapshot.data.isBlank!) {
+                          return Center(
+                            child: Text(
+                              "No Data...",
+                              style: boldtextsyle(15, color: Colors.black),
+                            ),
+                          );
+                        }
+                        return PageView.builder(
+                            // physics: const NeverScrollableScrollPhysics(),
+                            itemCount:
+                                (snapshot.data!.get("comments").length < 10)
+                                    ? snapshot.data!.get("comments").length
+                                    : 10,
+                            itemBuilder: (context, index) {
+                              Map<dynamic, dynamic> map =
+                                  snapshot.data!.get("comments");
+                              // print(map.values.elementAt(index));
+
+                              return SizedBox(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              "${map.values.elementAt(index)["name"]}",
+                                              style: mediumtextsyle(14,
+                                                  color: Colors.black),
+                                            ),
+                                            Text(
+                                              "(${map.values.elementAt(index)["job"]})",
+                                              style: normaltextsyle(10,
+                                                  color: Colors.grey[700]),
+                                            ),
+                                          ],
+                                        ),
+                                        starbuilder(map.values
+                                            .elementAt(index)["rating"]),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 7),
+                                    Text(
+                                      "\"${map.values.elementAt(index)["comment"]}\"",
+                                      style: boldtextsyle(15,
+                                          color: Colors.grey[800]),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            });
+                      },
+                    ),
+                  ),
+                  TextButton.icon(
+                      style: const ButtonStyle(
+                          //  splashFactory: InkSplash,
+                          ),
+                      onPressed: () {
+                        _showMyDialog(context);
+                      },
+                      icon: FaIcon(
+                        FontAwesomeIcons.comments,
+                        color: Colors.orange[900],
+                      ),
+                      label: Text(
+                        "Add Comment",
+                        style: boldtextsyle(16, color: Colors.orange[900]),
+                      ))
                 ],
               ),
             ),
@@ -1041,4 +1143,178 @@ class ProductScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class RatingStars extends GetxController {
+  RxInt stars = 0.obs;
+}
+
+Future<void> _showMyDialog(BuildContext context) async {
+  final obj = Get.put(RatingStars());
+  int star = 0;
+  TextEditingController controller = TextEditingController();
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Add Comment'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Rate it',
+                    style: mediumtextsyle(13),
+                  ),
+                  Obx(
+                    () => Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            obj.stars.value = 1;
+                          },
+                          child: Icon(
+                            Icons.star,
+                            size: 20,
+                            color: (obj.stars.value < 1)
+                                ? Colors.grey
+                                : Colors.green,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            obj.stars.value = 2;
+                          },
+                          child: Icon(
+                            Icons.star,
+                            size: 20,
+                            color: (obj.stars.value < 2)
+                                ? Colors.grey
+                                : Colors.green,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            obj.stars.value = 3;
+                          },
+                          child: Icon(
+                            Icons.star,
+                            size: 20,
+                            color: (obj.stars.value < 3)
+                                ? Colors.grey
+                                : Colors.green,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            obj.stars.value = 4;
+                          },
+                          child: Icon(
+                            Icons.star,
+                            size: 20,
+                            color: (obj.stars.value < 4)
+                                ? Colors.grey
+                                : Colors.green,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            obj.stars.value = 5;
+                          },
+                          child: Icon(
+                            Icons.star,
+                            size: 20,
+                            color: (obj.stars.value < 5)
+                                ? Colors.grey
+                                : Colors.green,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              const SizedBox(height:10),
+              TextField(
+                maxLines: 3,
+                controller: controller,
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                    hintText: "start typing your review here...",
+                    border: InputBorder.none,
+                    hintStyle: normaltextsyle(14, color: Colors.grey[700])),
+              ),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text(
+              'Cancel',
+              style: boldtextsyle(15),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          ElevatedButton(
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.orange[800])),
+            child: Text(
+              'Submit',
+              style: boldtextsyle(15, color: Colors.white),
+            ),
+            onPressed: () {},
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Widget starbuilder(var value) {
+  int count = value as int;
+  return SizedBox(
+    // color: Colors.amber,
+    height: 15,
+    width: 75,
+    child: Flex(
+      direction: Axis.horizontal,
+      children: [
+        SizedBox(
+          width: count * 15,
+          child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: count,
+              itemBuilder: (context, index) {
+                return const Icon(
+                  Icons.star,
+                  color: Colors.green,
+                  size: 15,
+                );
+              }),
+        ),
+        SizedBox(
+          width: (5 - count) * 15,
+          child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 5 - count,
+              itemBuilder: (context, index) {
+                return const Icon(
+                  Icons.star,
+                  color: Colors.grey,
+                  size: 15,
+                );
+              }),
+        ),
+      ],
+    ),
+  );
 }

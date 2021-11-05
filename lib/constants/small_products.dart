@@ -41,15 +41,15 @@ productBox(DocumentSnapshot _doc) {
             children: [
               Flexible(
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(0.0),
                   child: ClipRRect(
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20)),
                     child: SizedBox(
                       // height:100,
-                      child: Image.asset(
-                        "assets/model.png",
+                      child: Image.network(
+                        "${_doc.get("image")}",
                         fit: BoxFit.contain,
                       ),
                     ),
