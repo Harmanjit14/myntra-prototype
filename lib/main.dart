@@ -5,12 +5,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
+import 'package:myntra/bitmoji/bitmoji.dart';
 import 'package:myntra/constants/theme.dart';
 import 'package:myntra/models/user.dart';
 import 'package:myntra/screens/dashboard.dart';
 import 'package:myntra/screens/login.dart';
 import 'package:myntra/screens/profile.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,8 +43,8 @@ class MyApp extends StatelessWidget {
       theme: lightTheme(),
       darkTheme: darkTheme(),
       themeMode: ThemeMode.light,
-      // home: const ProfileScreen(),
-      home: authChanges(),
+      home: const GetBitmoji(false, 'DoLDEWUFGHn7TOirmyJN'),
+      // home: authChanges(),
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:myntra/constants/text.dart';
+import 'package:myntra/models/user.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class ProductInfo extends GetxController {
@@ -60,7 +61,7 @@ class ProductScreen extends StatelessWidget {
                             width: 7,
                           ),
                           Text(
-                            "View Studio",
+                            "Create Style",
                             style: boldtextsyle(14),
                           )
                         ],
@@ -744,6 +745,13 @@ class ProductScreen extends StatelessWidget {
                                 const Text("Loading.."),
                               ],
                             ));
+                          } else if (snapshot.data.isBlank!) {
+                            return Center(
+                              child: Text(
+                                "No Data..",
+                                style: mediumtextsyle(17),
+                              ),
+                            );
                           } else if (snapshot.hasData) {
                             return PageView.builder(
                               itemCount: (snapshot.data!.docs.length < 3)
@@ -1067,7 +1075,7 @@ class ProductScreen extends StatelessWidget {
                                     : 10,
                             itemBuilder: (context, index) {
                               Map<dynamic, dynamic> map =
-                                  snapshot.data!.get("comments");
+                                  snapshot.data!.get("comments")[index];
                               // print(map.values.elementAt(index));
 
                               return SizedBox(
@@ -1087,24 +1095,23 @@ class ProductScreen extends StatelessWidget {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Text(
-                                              "${map.values.elementAt(index)["name"]}",
+                                              "${map["name"]}",
                                               style: mediumtextsyle(14,
                                                   color: Colors.black),
                                             ),
                                             Text(
-                                              "(${map.values.elementAt(index)["job"]})",
+                                              "(${map["job"]})",
                                               style: normaltextsyle(10,
                                                   color: Colors.grey[700]),
                                             ),
                                           ],
                                         ),
-                                        starbuilder(map.values
-                                            .elementAt(index)["rating"]),
+                                        starbuilder(map["rating"]),
                                       ],
                                     ),
                                     const SizedBox(height: 7),
                                     Text(
-                                      "\"${map.values.elementAt(index)["comment"]}\"",
+                                      "\"${map["comment"]}\"",
                                       style: boldtextsyle(15,
                                           color: Colors.grey[800]),
                                     ),
@@ -1120,7 +1127,7 @@ class ProductScreen extends StatelessWidget {
                           //  splashFactory: InkSplash,
                           ),
                       onPressed: () {
-                        _showMyDialog(context);
+                        _showMyDialog(context, doc!);
                       },
                       icon: FaIcon(
                         FontAwesomeIcons.comments,
@@ -1149,7 +1156,8 @@ class RatingStars extends GetxController {
   RxInt stars = 0.obs;
 }
 
-Future<void> _showMyDialog(BuildContext context) async {
+Future<void> _showMyDialog(
+    BuildContext context, DocumentSnapshot snapshot) async {
   final obj = Get.put(RatingStars());
   int star = 0;
   TextEditingController controller = TextEditingController();
@@ -1239,7 +1247,7 @@ Future<void> _showMyDialog(BuildContext context) async {
                   )
                 ],
               ),
-              const SizedBox(height:10),
+              const SizedBox(height: 10),
               TextField(
                 maxLines: 3,
                 controller: controller,
@@ -1269,7 +1277,30 @@ Future<void> _showMyDialog(BuildContext context) async {
               'Submit',
               style: boldtextsyle(15, color: Colors.white),
             ),
-            onPressed: () {},
+            onPressed: () async {
+              print(snapshot.get("comments"));
+              List comments = snapshot.get("comments");
+              Map data = {
+                "comment": controller.text.toString(),
+                "name": user.name,
+                "job": user.jobType,
+                "rating": obj.stars.value,
+              };
+
+              comments.add(data);
+              // comments.addAll(finalData);
+              print(comments);
+              try {
+                await FirebaseFirestore.instance
+                    .collection("products")
+                    .doc(snapshot.get("id"))
+                    .update({"comments": comments}).then((value) {
+                  Navigator.pop(context);
+                });
+              } catch (e) {
+                print(e);
+              }
+            },
           ),
         ],
       );
