@@ -1,9 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:myntra/constants/text.dart';
 import 'package:myntra/screens/dashboard%20screens/allproducts.dart';
+import 'package:myntra/screens/dashboard%20screens/my_profile.dart';
+import 'package:myntra/screens/dashboard%20screens/studio.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class BottomSelector extends GetxController {
@@ -96,9 +99,10 @@ class _DashBoardState extends State<DashBoard> {
         allowImplicitScrolling: false,
         physics: const NeverScrollableScrollPhysics(),
         controller: _controller,
-        children: const [
-          AllProducts(),
-          // AllProducts(),
+        children:  [
+          const AllProducts(),
+          StudioScreen(),
+          MyProfile(FirebaseAuth.instance.currentUser!.uid),
           // AllProducts(),
         ],
       ),

@@ -43,8 +43,8 @@ class MyApp extends StatelessWidget {
       theme: lightTheme(),
       darkTheme: darkTheme(),
       themeMode: ThemeMode.light,
-      home: const GetBitmoji(false, 'DoLDEWUFGHn7TOirmyJN'),
-      // home: authChanges(),
+      // home: const GetBitmoji(false, 'DoLDEWUFGHn7TOirmyJN'),
+      home: authChanges(),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:myntra/bitmoji/bitmoji.dart';
 import 'package:myntra/constants/text.dart';
 import 'package:myntra/models/user.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
@@ -48,7 +49,10 @@ class ProductScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     child: MaterialButton(
                       elevation: 5,
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.to(() =>
+                            GetBitmoji(doc!.get("top"), doc!.id.toString()));
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.max,
@@ -455,6 +459,13 @@ class ProductScreen extends StatelessWidget {
                                 const Text("Loading.."),
                               ],
                             ));
+                          } else if (snapshot.data!.docs.isEmpty) {
+                            return Center(
+                              child: Text(
+                                "No Data..",
+                                style: mediumtextsyle(17),
+                              ),
+                            );
                           } else if (snapshot.hasData) {
                             return PageView.builder(
                               itemCount: (snapshot.data!.docs.length < 3)
@@ -462,6 +473,7 @@ class ProductScreen extends StatelessWidget {
                                   : 10,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
+                                print(snapshot.data!.docs[index].data());
                                 return Column(
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment:
@@ -473,28 +485,84 @@ class ProductScreen extends StatelessWidget {
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
                                           Expanded(
-                                            child: Container(
-                                              color: Colors.red,
+                                            child: SizedBox(
+                                              child: Stack(
+                                                children: [
+                                                  Positioned(
+                                                      top: 162,
+                                                      left: 0,
+                                                      right: 0,
+                                                      child: SizedBox(
+                                                          height: 120,
+                                                          child: Stack(
+                                                            alignment: Alignment
+                                                                .topCenter,
+                                                            children: [
+                                                              Stack(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .topCenter,
+                                                                children: [
+                                                                  Image.asset(
+                                                                      "assets/base_bottom.png"),
+                                                                  Image.network(snapshot
+                                                                      .data!
+                                                                      .docs[
+                                                                          index]
+                                                                      .get(
+                                                                          "bitImages")[1]),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ))),
+                                                  Positioned(
+                                                    top: 90,
+                                                    left: 0,
+                                                    right: 0,
+                                                    child: SizedBox(
+                                                      height: 200,
+                                                      child: Stack(
+                                                        alignment:
+                                                            Alignment.topCenter,
+                                                        children: [
+                                                          Image.asset(
+                                                              "assets/base_top.png"),
+                                                          Positioned(
+                                                            top: 10,
+                                                            child: Image.network(
+                                                                snapshot.data!
+                                                                    .docs[index]
+                                                                    .get(
+                                                                        "bitImages")[0]),
+                                                          ),
+                                                          // Image.network(fixedData.docs.first.get("image").toString())
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                      top: 0,
+                                                      left: 0,
+                                                      right: 0,
+                                                      child: SizedBox(
+                                                          height: 110,
+                                                          child: Image.asset(
+                                                              "assets/base_head.png"))),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                           Expanded(
                                               child: Column(
                                             children: [
                                               Expanded(
-                                                  child: InkWell(
-                                                onTap: () {},
-                                                child: Image.network(snapshot
-                                                    .data!.docs[index]
-                                                    .get("images")[0]),
-                                              )),
+                                                  child: Image.network(snapshot
+                                                      .data!.docs[index]
+                                                      .get("images")[0])),
                                               Expanded(
-                                                  child: InkWell(
-                                                onTap: () {},
-                                                splashColor: Colors.grey,
-                                                child: Image.network(snapshot
-                                                    .data!.docs[index]
-                                                    .get("images")[1]),
-                                              ))
+                                                  child: Image.network(snapshot
+                                                      .data!.docs[index]
+                                                      .get("images")[1]))
                                             ],
                                           ))
                                         ],
@@ -521,7 +589,7 @@ class ProductScreen extends StatelessWidget {
                                                     color: Colors.grey[700]),
                                               ),
                                               Text(
-                                                "${snapshot.data!.docs[index].get("createdBy")[0]}",
+                                                "${snapshot.data!.docs[index].get("createdby")[0]}",
                                                 style: boldtextsyle(14,
                                                     color: Colors.black),
                                               ),
@@ -655,27 +723,6 @@ class ProductScreen extends StatelessWidget {
                                                   ),
                                             Text(
                                               "${snapshot.data!.docs[index].get("likes")}",
-                                              style: mediumtextsyle(12),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          width: 15,
-                                        ),
-                                        Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            IconButton(
-                                              onPressed: () async {
-                                                print("Comments");
-                                              },
-                                              icon: FaIcon(
-                                                FontAwesomeIcons.comments,
-                                                color: Colors.grey[700],
-                                              ),
-                                            ),
-                                            Text(
-                                              "${snapshot.data!.docs[index].get("comments").length}",
                                               style: mediumtextsyle(12),
                                             ),
                                           ],
@@ -732,6 +779,7 @@ class ProductScreen extends StatelessWidget {
                           doc!.get('id').toString()
                         ]).snapshots(),
                         builder: (context, snapshot) {
+                          print(snapshot.data!.docs);
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             return Center(
@@ -745,7 +793,7 @@ class ProductScreen extends StatelessWidget {
                                 const Text("Loading.."),
                               ],
                             ));
-                          } else if (snapshot.data.isBlank!) {
+                          } else if (snapshot.data!.docs.isEmpty) {
                             return Center(
                               child: Text(
                                 "No Data..",
@@ -770,13 +818,85 @@ class ProductScreen extends StatelessWidget {
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
                                           Expanded(
-                                            child: Container(
-                                              color: Colors.red,
+                                            child: SizedBox(
+                                              child: Stack(
+                                                children: [
+                                                  Positioned(
+                                                      top: 162,
+                                                      left: 0,
+                                                      right: 0,
+                                                      child: SizedBox(
+                                                          height: 120,
+                                                          child: Stack(
+                                                            alignment: Alignment
+                                                                .topCenter,
+                                                            children: [
+                                                              Stack(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .topCenter,
+                                                                children: [
+                                                                  Image.asset(
+                                                                      "assets/base_bottom.png"),
+                                                                  Image.network(snapshot
+                                                                      .data!
+                                                                      .docs[
+                                                                          index]
+                                                                      .get(
+                                                                          "bitImages")[1]),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ))),
+                                                  Positioned(
+                                                    top: 90,
+                                                    left: 0,
+                                                    right: 0,
+                                                    child: SizedBox(
+                                                      height: 200,
+                                                      child: Stack(
+                                                        alignment:
+                                                            Alignment.topCenter,
+                                                        children: [
+                                                          Image.asset(
+                                                              "assets/base_top.png"),
+                                                          Positioned(
+                                                            top: 10,
+                                                            child: Image.network(
+                                                                snapshot.data!
+                                                                    .docs[index]
+                                                                    .get(
+                                                                        "bitImages")[0]),
+                                                          ),
+                                                          // Image.network(fixedData.docs.first.get("image").toString())
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                      top: 0,
+                                                      left: 0,
+                                                      right: 0,
+                                                      child: SizedBox(
+                                                          height: 110,
+                                                          child: Image.asset(
+                                                              "assets/base_head.png"))),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                           Expanded(
-                                              child: Container(
-                                            color: Colors.green,
+                                              child: Column(
+                                            children: [
+                                              Expanded(
+                                                  child: Image.network(snapshot
+                                                      .data!.docs[index]
+                                                      .get("images")[0])),
+                                              Expanded(
+                                                  child: Image.network(snapshot
+                                                      .data!.docs[index]
+                                                      .get("images")[1]))
+                                            ],
                                           ))
                                         ],
                                       ),
@@ -802,41 +922,12 @@ class ProductScreen extends StatelessWidget {
                                                     color: Colors.grey[700]),
                                               ),
                                               Text(
-                                                "${snapshot.data!.docs[index].get("createdBy")[0]}",
+                                                "${snapshot.data!.docs[index].get("createdby")[0]}",
                                                 style: boldtextsyle(14,
                                                     color: Colors.black),
                                               ),
                                             ],
                                           ),
-                                          (snapshot.data!.docs[index]
-                                                  .get('verified'))
-                                              ? Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "Verified User",
-                                                      style: normaltextsyle(10,
-                                                          color: Colors
-                                                              .green[800]),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 3,
-                                                    ),
-                                                    FaIcon(
-                                                      FontAwesomeIcons
-                                                          .checkCircle,
-                                                      color: Colors.green[800],
-                                                      size: 10,
-                                                    )
-                                                  ],
-                                                )
-                                              : const SizedBox(
-                                                  height: 0,
-                                                  width: 0,
-                                                ),
                                         ],
                                       ),
                                     ),
@@ -936,27 +1027,6 @@ class ProductScreen extends StatelessWidget {
                                                   ),
                                             Text(
                                               "${snapshot.data!.docs[index].get("likes")}",
-                                              style: mediumtextsyle(12),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          width: 15,
-                                        ),
-                                        Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            IconButton(
-                                              onPressed: () async {
-                                                print("Comments");
-                                              },
-                                              icon: FaIcon(
-                                                FontAwesomeIcons.comments,
-                                                color: Colors.grey[700],
-                                              ),
-                                            ),
-                                            Text(
-                                              "${snapshot.data!.docs[index].get("comments").length}",
                                               style: mediumtextsyle(12),
                                             ),
                                           ],
@@ -1051,6 +1121,7 @@ class ProductScreen extends StatelessWidget {
                           .doc(doc!.get('id'))
                           .snapshots(),
                       builder: (context, snapshot) {
+                        // print(snapshot.data!.data());
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return const Center(
@@ -1060,6 +1131,13 @@ class ProductScreen extends StatelessWidget {
                           );
                         } else if (snapshot.hasError ||
                             snapshot.data.isBlank!) {
+                          return Center(
+                            child: Text(
+                              "No Data...",
+                              style: boldtextsyle(15, color: Colors.black),
+                            ),
+                          );
+                        } else if (snapshot.data!.get("comments").length == 0) {
                           return Center(
                             child: Text(
                               "No Data...",

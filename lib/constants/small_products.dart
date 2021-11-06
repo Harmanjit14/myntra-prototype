@@ -50,7 +50,7 @@ productBox(DocumentSnapshot _doc) {
                       // height:100,
                       child: Image.network(
                         "${_doc.get("image")}",
-                        fit: BoxFit.contain,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
