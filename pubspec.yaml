@@ -34,6 +34,7 @@ dependencies:
   firebase_core: ^1.7.0
   dropdown_search: ^2.0.0
   youtube_player_iframe: ^2.2.2
+  youtube_api: ^1.0.4
   flutter:
     sdk: flutter
   font_awesome_flutter: ^9.1.0

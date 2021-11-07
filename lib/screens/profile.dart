@@ -44,6 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       "image": user.image,
       "email": FirebaseAuth.instance.currentUser!.email.toString(),
       "job": user.jobType,
+      "images":[],
     }).then((value) {
       Get.snackbar("Success", "Account created successfully ${user.name}",
 

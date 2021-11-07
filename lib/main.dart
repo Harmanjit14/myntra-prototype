@@ -5,9 +5,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
-import 'package:myntra/bitmoji/bitmoji.dart';
 import 'package:myntra/constants/theme.dart';
 import 'package:myntra/models/user.dart';
+import 'package:myntra/screens/dashboard%20screens/studio.dart';
 import 'package:myntra/screens/dashboard.dart';
 import 'package:myntra/screens/login.dart';
 import 'package:myntra/screens/profile.dart';
@@ -43,7 +43,6 @@ class MyApp extends StatelessWidget {
       theme: lightTheme(),
       darkTheme: darkTheme(),
       themeMode: ThemeMode.light,
-      // home: const GetBitmoji(false, 'DoLDEWUFGHn7TOirmyJN'),
       home: authChanges(),
     );
   }
@@ -71,6 +70,7 @@ class _AuthCheckerState extends State<AuthChecker> with AfterLayoutMixin {
       user.jobType = value['job'];
       user.email = value['email'];
       user.score = value['score'];
+      user.verified = value['verified'];
       Get.offAll(() => const DashBoard());
     }).catchError((e) {
       print(e);
