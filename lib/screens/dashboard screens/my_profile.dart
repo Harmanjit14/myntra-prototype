@@ -50,7 +50,7 @@ class MyProfile extends StatelessWidget {
                   CircleAvatar(
                     backgroundColor: Colors.white,
                     radius: 60,
-                    child: Image.network(
+                    backgroundImage: NetworkImage(
                       obj.get("image"),
                     ),
                   ),
@@ -117,7 +117,7 @@ class MyProfile extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        "Styles Created by User!",
+                        "Outfits created by You!",
                         style:
                             boldtextsyle(16, shadow: true, color: Colors.black),
                       ),
@@ -393,7 +393,7 @@ class MyProfile extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "User Pictures...",
+                          "User Pictures",
                           style: boldtextsyle(16,
                               shadow: true, color: Colors.black),
                         ),
@@ -503,9 +503,9 @@ class AnyProfile extends StatelessWidget {
                     CircleAvatar(
                       backgroundColor: Colors.white,
                       radius: 60,
-                      child: Image.network(
-                        obj.get("image"),
-                      ),
+                       backgroundImage: NetworkImage(
+                      obj.get("image"),
+                    ),
                     ),
                     Column(
                       mainAxisSize: MainAxisSize.min,
@@ -570,7 +570,7 @@ class AnyProfile extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "Styles Created by User!",
+                          "Outfits created by User!",
                           style: boldtextsyle(16,
                               shadow: true, color: Colors.black),
                         ),
@@ -859,7 +859,7 @@ class AnyProfile extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            "User Pictures...",
+                            "User Pictures",
                             style: boldtextsyle(16,
                                 shadow: true, color: Colors.black),
                           ),

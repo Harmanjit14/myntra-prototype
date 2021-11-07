@@ -36,12 +36,12 @@ class _GetBitmojiState extends State<GetBitmoji> with AfterLayoutMixin {
 
   @override
   void afterFirstLayout(BuildContext context) async {
-    print(widget.id);
-    print("32KXvHi8WhBCw3ncRb1q");
+    // print(widget.id);
+    // print("32KXvHi8WhBCw3ncRb1q");
     QuerySnapshot<Map<String, dynamic>> fixedData = await FirebaseFirestore
         .instance
         .collection("bitmoji")
-        .where("id", isEqualTo: widget.id.removeAllWhitespace)
+        .where("id", isEqualTo: widget.id)
         .get();
     // print(fixedData["type"]);
     if (widget.top) {
@@ -50,7 +50,7 @@ class _GetBitmojiState extends State<GetBitmoji> with AfterLayoutMixin {
           .collection("bitmoji")
           .where("type", isEqualTo: 1)
           .get();
-      print(data.docs[0].get("type"));
+      // print(data.docs[0].get("type"));
       Get.off(() => BitScreen(true, fixedData, data));
     } else {
       QuerySnapshot<Map<String, dynamic>> data = await FirebaseFirestore

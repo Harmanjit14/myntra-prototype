@@ -51,6 +51,7 @@ class ProductScreen extends StatelessWidget {
                     child: MaterialButton(
                       elevation: 5,
                       onPressed: () {
+                        print(doc!.get("top"));
                         Get.to(() =>
                             GetBitmoji(doc!.get("top"), doc!.id.toString()));
                       },

@@ -163,14 +163,14 @@ class _StudioScreenState extends State<StudioScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    "Trending Tops near you..",
+                                    "Trending Tops near you",
                                     style: boldtextsyle(16,
                                         shadow: true, color: Colors.black),
                                   ),
                                 ],
                               ),
                               Text(
-                                "(Swipw to see more)",
+                                "(Swipe to see more)",
                                 style:
                                     normaltextsyle(11, color: Colors.grey[700]),
                               ),
@@ -258,14 +258,14 @@ class _StudioScreenState extends State<StudioScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    "Trending Lowers near you..",
+                                    "Trending Lowers near you",
                                     style: boldtextsyle(16,
                                         shadow: true, color: Colors.black),
                                   ),
                                 ],
                               ),
                               Text(
-                                "(Swipw to see more)",
+                                "(Swipe to see more)",
                                 style:
                                     normaltextsyle(11, color: Colors.grey[700]),
                               ),
@@ -320,7 +320,7 @@ class _StudioScreenState extends State<StudioScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    "Trending Styles!",
+                                    "Trending Outfits!",
                                     style: boldtextsyle(16,
                                         shadow: true, color: Colors.black),
                                   ),
