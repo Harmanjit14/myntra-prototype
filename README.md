@@ -9,4 +9,4 @@ Also, we created a dress up game where users can choose their avatars, dress the
 So, We came up with a bunch of features which are an extension to the current myntra app.
 
 #### Link to Project Presentation: [link to Presentation!](https://docs.google.com/presentation/d/1RUnSHZ1izIzTayb9p6XvfayCzzaSHapzAw_7cq5YFlQ/edit?usp=sharing)
-#### Link to Project Videos: [link to Videos!](https://github.com/Harmanjit14/myntra-prototype)
+#### Link to Project Videos: [link to Videos!](https://drive.google.com/drive/folders/1G8ay1cIxMwB2st_sqfLkV5-IXT4C3oa3?usp=sharing)
