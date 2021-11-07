@@ -13,7 +13,7 @@ class StudioScreen extends StatefulWidget {
 }
 
 class _StudioScreenState extends State<StudioScreen> {
-  static String key = 'AIzaSyCVrUaADZxskcnqngZe9QDrPIG5V-1Bdzk';
+  static String key = 'AIzaSyAuwYEv8IlST1XgIyHEtKmkcUzrFAjfMWE';
   YoutubeAPI ytApi = YoutubeAPI(key);
   List<YouTubeVideo> result = [];
   int i = 0;
