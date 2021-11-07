@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:myntra/bitmoji/bitmoji.dart';
 import 'package:myntra/constants/text.dart';
 import 'package:myntra/models/user.dart';
+import 'package:myntra/screens/dashboard%20screens/my_profile.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class ProductInfo extends GetxController {
@@ -576,7 +577,11 @@ class ProductScreen extends StatelessWidget {
                                         // padding: EdgeInsets.all(0),
                                         alignment: Alignment.center,
                                       ),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Get.to(() => AnyProfile(snapshot
+                                            .data!.docs[index]
+                                            .get("createdby")[2]));
+                                      },
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [

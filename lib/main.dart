@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:myntra/constants/theme.dart';
 import 'package:myntra/models/user.dart';
-import 'package:myntra/screens/dashboard%20screens/studio.dart';
 import 'package:myntra/screens/dashboard.dart';
 import 'package:myntra/screens/login.dart';
 import 'package:myntra/screens/profile.dart';

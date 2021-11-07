@@ -267,7 +267,7 @@ class BitScreen extends StatelessWidget {
                             fixedData.docs.first.get("image"),
                           ]
                   }).then((value) => {
-                        Get.off(()=>const DashBoard()),
+                        Get.offAll(()=>const DashBoard()),
                       });
                 },
                 child: (obj.loading.value)
