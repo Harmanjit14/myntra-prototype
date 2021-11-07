@@ -1,14 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:after_layout/after_layout.dart';
 import 'package:myntra/constants/text.dart';
 import 'package:youtube_api/youtube_api.dart';
-
-class ScrapedVideos extends GetxController {
-  RxList videos = [].obs;
-}
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class StudioScreen extends StatefulWidget {
   const StudioScreen({Key? key}) : super(key: key);
@@ -20,20 +15,24 @@ class StudioScreen extends StatefulWidget {
 class _StudioScreenState extends State<StudioScreen> {
   static String key = 'AIzaSyCVrUaADZxskcnqngZe9QDrPIG5V-1Bdzk';
   YoutubeAPI ytApi = YoutubeAPI(key);
-  List<YouTubeVideo> videoResult = [];
-  final obj = Get.put(ScrapedVideos());
+  List<YouTubeVideo> result = [];
+  int i = 0;
   @override
   void initState() {
-    String query = "fashion,myntra";
+    String query = "fashion,new,top,myntra";
 
     String type = "video";
 
     YoutubeAPI ytApi = YoutubeAPI(key, maxResults: 5, type: type);
 
     ytApi.search(query).then((value) => {
-          videoResult = value,
-          obj.videos.value = value,
+          result = value,
+          print(result),
+          setState(() {}),
         });
+
+    // print(result);
+
     super.initState();
   }
 
@@ -47,7 +46,74 @@ class _StudioScreenState extends State<StudioScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
+            Container(
+              margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: const [
+                    BoxShadow(blurRadius: 5, color: Colors.grey)
+                  ]),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    child: (result.isEmpty)
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.pink[800],
+                            ),
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: YoutubePlayerIFrame(
+                              controller: YoutubePlayerController(
+                                  initialVideoId: result[0].id!),
+                              aspectRatio: 4 / 3,
+                            ),
+                          ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 5),
+            Container(
+              margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: const [
+                    BoxShadow(blurRadius: 5, color: Colors.grey)
+                  ]),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    child: (result.isEmpty)
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.pink[800],
+                            ),
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: YoutubePlayerIFrame(
+                              controller: YoutubePlayerController(
+                                  initialVideoId: result[1].id!),
+                              aspectRatio: 4 / 3,
+                            ),
+                          ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 5),
             StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection("kits")
@@ -138,8 +204,41 @@ class _StudioScreenState extends State<StudioScreen> {
                             ],
                           ),
                         ),
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: const [
+                                BoxShadow(blurRadius: 5, color: Colors.grey)
+                              ]),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                child: (result.isEmpty)
+                                    ? Center(
+                                        child: CircularProgressIndicator(
+                                          color: Colors.pink[800],
+                                        ),
+                                      )
+                                    : ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: YoutubePlayerIFrame(
+                                          controller: YoutubePlayerController(
+                                              initialVideoId: result[2].id!),
+                                          aspectRatio: 4 / 3,
+                                        ),
+                                      ),
+                              ),
+                            ],
+                          ),
+                        ),
                         const SizedBox(
-                          height: 10,
+                          height: 5,
                         ),
                         Container(
                           margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
@@ -473,6 +572,72 @@ class _StudioScreenState extends State<StudioScreen> {
                     return const Center(child: Text("No Data found here..."));
                   }
                 }),
+            Container(
+              margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: const [
+                    BoxShadow(blurRadius: 5, color: Colors.grey)
+                  ]),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    child: (result.isEmpty)
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.pink[800],
+                            ),
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: YoutubePlayerIFrame(
+                              controller: YoutubePlayerController(
+                                  initialVideoId: result[3].id!),
+                              aspectRatio: 4 / 3,
+                            ),
+                          ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: const [
+                    BoxShadow(blurRadius: 5, color: Colors.grey)
+                  ]),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    child: (result.isEmpty)
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.pink[800],
+                            ),
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: YoutubePlayerIFrame(
+                              controller: YoutubePlayerController(
+                                  initialVideoId: result[4].id!),
+                              aspectRatio: 4 / 3,
+                            ),
+                          ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 20)

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myntra/constants/text.dart';
 import 'package:myntra/models/user.dart';
+import 'package:myntra/screens/dashboard.dart';
 
 class BitmojiButton extends GetxController {
   RxBool loading = false.obs;
@@ -266,7 +267,7 @@ class BitScreen extends StatelessWidget {
                             fixedData.docs.first.get("image"),
                           ]
                   }).then((value) => {
-                        // Get.off(()=>MyProfile());
+                        Get.off(()=>const DashBoard()),
                       });
                 },
                 child: (obj.loading.value)
